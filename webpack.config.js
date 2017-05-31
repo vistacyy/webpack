@@ -1,14 +1,20 @@
 let path = require('path');
 let webpack = require('webpack');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
+// let ManifestPlugin = require('webpack-manifest-plugin');
+var ChunkManifestPlugin = require("chunk-manifest-webpack-plugin");
+var WebpackChunkHash=require('webpack-chunk-hash');
+
 
 module.exports = {
   entry: {
     main: './app/index.js',
-    vendor: ['./app/common.js','./app/async.js']
+    vendor: './app/common.js'
   },
   output: {
-    filename: '[name].[chunkhash].js',
+    publicPath: './dist/',
+    filename: "[name].[chunkhash].js",
+    chunkFilename: "[name].[chunkhash].js",
     path: path.resolve(__dirname, 'dist')
   },
   module: {
@@ -27,20 +33,34 @@ module.exports = {
 
     // 指定公共 bundle 的名字。
     new webpack.optimize.CommonsChunkPlugin({
-       names: ['vendor', 'manifest']
-    })
+      names: ['vendor', 'manifest'],
+      minChunks: Infinity
+    }),
 
-    // // 隐含的通用 vendor chunk
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: 'vendor',
-    //   minChunks: function (module) {
-    //     // this assumes your vendor imports exist in the node_modules directory
-    //     return module.context && module.context.indexOf('node_modules') !== -1;
-    //   }
+    // 压缩
+    // new webpack.optimize.UglifyJsPlugin({
+    //   sourceMap: true
     // }),
-    // //CommonChunksPlugin will now extract all the common modules from vendor and main bundles
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: 'manifest' //But since there are no more common modules between them we end up with just the runtime code included in the manifest file
-    // })
+
+    // 环境变量
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+
+    // 提取生成的文件名,保存到manifest.json
+    // new ManifestPlugin(),
+
+    // 根据相对路径生成webpack标识符
+    new webpack.HashedModuleIdsPlugin(),
+
+    // 根据内容生成chunkHash
+    new WebpackChunkHash(),
+
+    // 记录chunkHash到文件
+    new ChunkManifestPlugin({
+      filename: "chunk-manifest.json",
+      manifestVariable: "webpackManifest",
+      // inlineManifest: true
+    })
   ]
 };

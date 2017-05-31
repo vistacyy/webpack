@@ -1,1 +1,1 @@
-console.log('This is common js.');
+console.log('This is common js.====>',process.env.NODE_ENV);
