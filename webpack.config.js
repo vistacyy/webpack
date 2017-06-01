@@ -1,7 +1,6 @@
 let path = require('path');
 let webpack = require('webpack');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
-// let ManifestPlugin = require('webpack-manifest-plugin');
 var ChunkManifestPlugin = require("chunk-manifest-webpack-plugin");
 var WebpackChunkHash = require('webpack-chunk-hash');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -54,9 +53,6 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
-
-    // 提取生成的文件名,保存到manifest.json
-    // new ManifestPlugin(),
 
     // 根据相对路径生成webpack标识符
     new webpack.HashedModuleIdsPlugin(),
