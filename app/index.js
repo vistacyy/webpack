@@ -12,4 +12,6 @@ function component() {
   return element;  
 }
 
+console.log('$',_);
+
 document.body.appendChild(component());

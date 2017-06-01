@@ -3,8 +3,8 @@ let webpack = require('webpack');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
 // let ManifestPlugin = require('webpack-manifest-plugin');
 var ChunkManifestPlugin = require("chunk-manifest-webpack-plugin");
-var WebpackChunkHash=require('webpack-chunk-hash');
-
+var WebpackChunkHash = require('webpack-chunk-hash');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -12,20 +12,28 @@ module.exports = {
     vendor: './app/common.js'
   },
   output: {
-    publicPath: './dist/',
+    publicPath: './',
     filename: "[name].[chunkhash].js",
     chunkFilename: "[name].[chunkhash].js",
     path: path.resolve(__dirname, 'dist')
   },
   module: {
-    rules: [{
-      test: /\.css$/,
-      // use: ['style-loader', 'css-loader']
-      // 分离css代码
-      use: ExtractTextPlugin.extract({
-        use: 'css-loader'
-      })
-    }]
+    rules: [
+      {
+        test: /\.css$/,
+        // use: ['style-loader', 'css-loader']
+        // 分离css代码
+        use: ExtractTextPlugin.extract({
+          use: 'css-loader'
+        })
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader'
+        ]
+      }
+    ]
   },
   plugins: [
     // 分离css代码
@@ -61,6 +69,15 @@ module.exports = {
       filename: "chunk-manifest.json",
       manifestVariable: "webpackManifest",
       // inlineManifest: true
+    }),
+    // 全局变量
+    new webpack.ProvidePlugin({
+      _: 'moment'
+    }),
+
+    // 自动生成html
+    new HtmlWebpackPlugin({
+      title: 'Output Management'
     })
   ]
 };
