@@ -4,6 +4,9 @@ import './index.css';
 //   import('./async.js').then(({asyncTest})=>{asyncTest()}).catch(err=>{console.log(err)});
 // }
 
+var resolve  = require.resolve('./index.css');
+console.log('resolve',resolve);
+
 function component() {    
   var element = document.createElement('div');
 
